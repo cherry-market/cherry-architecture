@@ -50,15 +50,15 @@
 ### Before (Redis OFF)
 
 ```
-wrk -t4 -c50 -d60s "http://localhost:8080/products?limit=50&sortBy=LATEST"
-wrk -t4 -c50 -d60s "http://localhost:8080/me/likes?limit=20" -H "Authorization: Bearer <TOKEN>"
+wrk -t4 -c50 -d60s "http://localhost:{port}/products?limit=50&sortBy=LATEST"
+wrk -t4 -c50 -d60s "http://localhost:{port}/me/likes?limit=20" -H "Authorization: Bearer <TOKEN>"
 ```
 
 ### After (Redis ON)
 
 ```
-wrk -t4 -c50 -d60s "http://localhost:8080/products?limit=50&sortBy=LATEST"
-wrk -t4 -c50 -d60s "http://localhost:8080/me/likes?limit=20" -H "Authorization: Bearer <TOKEN>"
+wrk -t4 -c50 -d60s "http://localhost:{port}/products?limit=50&sortBy=LATEST"
+wrk -t4 -c50 -d60s "http://localhost:{port}/me/likes?limit=20" -H "Authorization: Bearer <TOKEN>"
 ```
 
 ---

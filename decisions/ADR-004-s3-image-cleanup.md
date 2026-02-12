@@ -11,7 +11,7 @@
 상품 삭제(soft delete) 및 이미지 수정(개별 이미지 삭제) 시, S3에 남아있는 이미지 객체의 정리 전략을 결정해야 했다.
 
 현재 구조:
-- S3 버킷: `cheryi-product-images-prod` (ap-northeast-2)
+- S3 버킷: Production bucket (ap-northeast-2)
 - 이미지 1장당 S3 객체 3개:
   - `products/original/{imageKey}` — 원본 (2~8MB)
   - `products/detail/{imageKey}` — 리사이즈 1280px (200~500KB)

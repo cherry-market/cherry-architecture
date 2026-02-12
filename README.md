@@ -1,0 +1,65 @@
+# Cherry Architecture
+
+> K-POP 팬덤 굿즈 C2C 플랫폼의 시스템 아키텍처 및 설계 결정 기록
+
+[![Service](https://img.shields.io/badge/Service-cheryi.com-FF2E88?style=for-the-badge&logo=safari&logoColor=white)](https://cheryi.com)
+
+---
+
+## Tech Stack
+
+| Layer | Stack |
+|-------|-------|
+| **Frontend** | React 19, TypeScript, Vite, Zustand, Tailwind CSS |
+| **Backend** | Spring Boot 3, Java 21, JPA/Hibernate, Spring Security (JWT) |
+| **Database** | MySQL 8 (RDS), Redis (Cache + Ranking) |
+| **Infra** | AWS EC2, S3, Lambda, CloudFront, ALB, Docker Compose |
+| **AI** | Google Gemini (gemini-2.0-flash) — 상품 설명 자동 생성 |
+
+---
+
+## Documents
+
+### Architecture
+
+시스템 구성, 배포 구조, 데이터 흐름을 다룹니다.
+
+- [System Overview](architecture/system-overview.md) — 전체 인프라 구성 (Mermaid)
+- [ERD](architecture/erd.md) — 데이터 모델 설계
+- [Use Cases](architecture/use-cases.md) — 핵심 유스케이스 다이어그램
+- [CI/CD + Runtime](architecture/cicd.md) — 배포 파이프라인 및 런타임 구조
+
+### Architecture Decision Records
+
+설계 과정에서 내린 주요 의사결정과 그 근거를 기록합니다.
+
+- [ADR-001: Soft Delete 전략](decisions/ADR-001-soft-delete-strategy.md)
+- [ADR-002: 이미지 수정 범위](decisions/ADR-002-image-edit-scope.md)
+- [ADR-003: 상태 전환 규칙](decisions/ADR-003-status-transition-rules.md)
+- [ADR-004: S3 이미지 정리](decisions/ADR-004-s3-image-cleanup.md)
+
+### Performance
+
+Redis Cache-Aside 패턴 적용 전후 성능 비교 분석입니다.
+
+- [Caching Optimization Report](performance/caching-optimization.md) — wrk 벤치마크 기반 Before/After
+
+### Engineering
+
+- [AI-Augmented Development](engineering/ai-augmented-development.md) — AI 에이전트 협업 방식과 활용 기록
+
+---
+
+## Repositories
+
+| Repository | Role |
+|------------|------|
+| [cherry-client](https://github.com/cherry-market/cherry-client) | Frontend (React + FSD) |
+| [cherry-server](https://github.com/cherry-market/cherry-server) | Backend (Spring Boot) |
+| [cherry-architecture](https://github.com/cherry-market/cherry-architecture) | Architecture Docs (this repo) |
+
+---
+
+<div align="center">
+  <sub>Cherry Market &mdash; Human Architect + AI Collaboration</sub>
+</div>

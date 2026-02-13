@@ -10,6 +10,7 @@ flowchart LR
   CF -->|GET static assets| S3[S3 - Static Website Bucket]
 
   U -->|HTTPS 443 / API calls| ALB[Application Load Balancer]
+  U -->|WSS 443 / WebSocket| ALB
   ALB -->|Forward HTTP 8080| EC2["EC2 Instance (Docker Compose)"]
   EC2 -->|JDBC 3306| RDS[(RDS MySQL)]
   EC2 -->|TCP 6379| Redis[(Redis Container)]
@@ -35,6 +36,40 @@ flowchart LR
 - ALB(HTTPS 443)가 수신하여 EC2(HTTP 8080)로 포워딩
 - Spring Boot가 비즈니스 로직 처리 중 RDS(MySQL)와 Redis를 사용
 - 응답은 ALB를 통해 브라우저로 반환
+
+### 3. 실시간 채팅 (WebSocket)
+
+- 브라우저에서 ALB(WSS 443)를 통해 WebSocket 연결 (`/ws` 엔드포인트)
+- STOMP 프로토콜로 메시지 송수신
+- 채팅방 토픽(`/topic/chat.{roomId}`) 구독으로 실시간 메시지 수신
+- 사용자 토픽(`/topic/user.{userId}`) 구독으로 채팅 목록 실시간 갱신
+
+## Real-time Chat Flow
+
+```mermaid
+sequenceDiagram
+    participant A as Buyer Browser
+    participant B as Backend (STOMP)
+    participant DB as MySQL
+    participant R as Redis
+    participant S as Seller Browser
+
+    A->>B: STOMP CONNECT (JWT)
+    B->>B: JWT 검증
+    B-->>A: CONNECTED
+
+    A->>B: SUBSCRIBE /topic/chat.{roomId}
+    B->>B: 채팅방 참여자 검증
+    S->>B: SUBSCRIBE /topic/chat.{roomId}
+
+    A->>B: SEND /app/chat.send {content}
+    B->>R: Rate Limit 체크
+    B->>B: XSS sanitize
+    B->>DB: INSERT chat_messages
+    B-->>A: MESSAGE /topic/chat.{roomId}
+    B-->>S: MESSAGE /topic/chat.{roomId}
+    B-->>S: MESSAGE /topic/user.{sellerId} (목록 갱신 알림)
+```
 
 ## Image Upload Pipeline
 

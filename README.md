@@ -12,7 +12,8 @@
 |-------|-------|
 | **Frontend** | React 19, TypeScript, Vite, Zustand, Tailwind CSS |
 | **Backend** | Spring Boot 3, Java 21, JPA/Hibernate, Spring Security (JWT) |
-| **Database** | MySQL 8 (RDS), Redis (Cache + Ranking) |
+| **Real-time** | STOMP over WebSocket, SimpleBroker |
+| **Database** | MySQL 8 (RDS), Redis (Cache + Ranking + Rate Limit) |
 | **Infra** | AWS EC2, S3, Lambda, CloudFront, ALB, Docker Compose |
 | **AI** | Google Gemini (gemini-2.0-flash) — 상품 설명 자동 생성 |
 

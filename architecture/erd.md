@@ -9,6 +9,11 @@ erDiagram
   TAGS ||--o{ PRODUCT_TAGS : tags
   USERS ||--o{ PRODUCT_LIKES : likes
   PRODUCTS ||--o{ PRODUCT_LIKES : liked_by
+  PRODUCTS ||--o{ CHAT_ROOMS : discussed_in
+  USERS ||--o{ CHAT_ROOMS : "buys/sells"
+  CHAT_ROOMS ||--o{ CHAT_MESSAGES : contains
+  USERS ||--o{ CHAT_MESSAGES : sends
+  CHAT_ROOMS ||--o{ CHAT_READ_POSITIONS : tracks
 
   USERS {
     bigint id PK
@@ -75,6 +80,36 @@ erDiagram
     bigint id PK
     bigint user_id FK
     bigint product_id FK
+    datetime created_at
+    datetime updated_at
+  }
+
+  CHAT_ROOMS {
+    bigint id PK
+    bigint product_id FK
+    bigint buyer_id FK
+    bigint seller_id FK
+    datetime last_message_at
+    datetime created_at
+    datetime updated_at
+  }
+
+  CHAT_MESSAGES {
+    bigint id PK
+    bigint room_id FK
+    bigint sender_id FK
+    enum message_type "TEXT|IMAGE|SYSTEM"
+    text content
+    varchar client_message_id
+    datetime created_at
+    datetime updated_at
+  }
+
+  CHAT_READ_POSITIONS {
+    bigint id PK
+    bigint room_id FK
+    bigint user_id FK
+    bigint last_read_message_id
     datetime created_at
     datetime updated_at
   }

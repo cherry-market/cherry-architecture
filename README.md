@@ -37,6 +37,8 @@
 - [ADR-002: 이미지 수정 범위](decisions/ADR-002-image-edit-scope.md)
 - [ADR-003: 상태 전환 규칙](decisions/ADR-003-status-transition-rules.md)
 - [ADR-004: S3 이미지 정리](decisions/ADR-004-s3-image-cleanup.md)
+- [ADR-005: 채팅 메시지 저장 전략](decisions/ADR-005-chat-message-storage.md)
+- [ADR-006: 채팅 목록 실시간 갱신](decisions/ADR-006-chat-list-realtime-update.md)
 
 ### Performance
 

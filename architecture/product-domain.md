@@ -411,9 +411,9 @@ flowchart TD
     B --> C[전체 쿼리에 deleted_at IS NULL 조건]
     C --> D[목록/상세에서 숨김]
     D --> E[30일 유예 기간]
-    E --> F{Spring @Scheduled 배치}
-    F --> G[WHERE deleted_at < NOW - INTERVAL 30 DAY]
-    G --> H[물리 삭제 (DELETE)]
+    E --> F{"@Scheduled 배치"}
+    F --> G["WHERE deleted_at < NOW - 30 DAY"]
+    G --> H["물리 삭제 (DELETE)"]
 ```
 
 **정책:**

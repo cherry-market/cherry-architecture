@@ -56,7 +56,7 @@ sequenceDiagram
     participant Redis as Redis
     participant DB as MySQL
 
-    C->>API: POST /auth/signup {email, password, nickname}
+    C->>API: 회원가입 요청 {email, password, nickname}
     API->>SVC: signup()
     SVC->>Redis: Rate Limit 체크 (IP별)
     alt Rate Limit 초과
@@ -75,10 +75,10 @@ sequenceDiagram
                 SVC->>DB: INSERT User
                 SVC-->>API: UserResponse
                 API-->>C: 201 Created + UserResponse
-                C->>API: POST /auth/login (자동 로그인)
+                C->>API: 로그인 요청 (자동 로그인)
                 API-->>C: TokenResponse
-                C->>API: GET /users/me (사용자 정보 조회)
-                Note right of API: /me는 UserController에 위치
+                C->>API: 사용자 정보 조회
+                Note right of API: 별도 컨트롤러에서 처리
                 API-->>C: UserResponse
                 C->>C: authStore.login(user, token)
                 C->>C: 홈으로 이동
@@ -98,7 +98,7 @@ sequenceDiagram
     participant DB as MySQL
     participant JWT as JwtTokenProvider
 
-    C->>API: POST /auth/login {email, password}
+    C->>API: 로그인 요청 {email, password}
     API->>SVC: login()
     SVC->>Redis: Rate Limit 체크 (IP별)
     alt Rate Limit 초과
@@ -116,8 +116,8 @@ sequenceDiagram
                 JWT-->>SVC: JWT Access Token
                 SVC-->>API: TokenResponse
                 API-->>C: 200 OK + {accessToken, tokenType}
-                C->>API: GET /users/me (Authorization: Bearer {token})
-                Note right of API: /me는 UserController에 위치
+                C->>API: 사용자 정보 조회 (Authorization: Bearer {token})
+                Note right of API: 별도 컨트롤러에서 처리
                 API-->>C: UserResponse
                 C->>C: authStore.login(user, token)
             end
@@ -135,7 +135,7 @@ sequenceDiagram
     participant SC as SecurityContext
     participant Controller as Controller
 
-    C->>Filter: GET /users/me (Authorization: Bearer {JWT})
+    C->>Filter: 인증된 API 요청 (Authorization: Bearer {JWT})
     Filter->>Filter: resolveToken() (헤더에서 토큰 추출)
     Filter->>JWT: validateToken(token)
     JWT->>JWT: 서명 검증 + 만료 검증
@@ -174,18 +174,18 @@ sequenceDiagram
 Spring Security는 **first-match** 방식이므로, 더 구체적인 경로를 먼저 선언해야 합니다.
 
 ```java
-// 올바른 순서 예시
-.requestMatchers("/products/my").authenticated()          // 먼저
-.requestMatchers("/products/**").permitAll()              // 나중
+// 올바른 순서 예시: 구체적 경로를 먼저, 와일드카드를 나중에
+.requestMatchers("구체적 경로").authenticated()          // 먼저
+.requestMatchers("와일드카드 경로").permitAll()           // 나중
 ```
 
 **현재 규칙:**
-- `/error` → permitAll (내부 에러 처리 시 401 방지)
-- `/ws/**` → permitAll (WebSocket 연결은 STOMP CONNECT에서 JWT 검증)
-- `POST /auth/**` → permitAll (로그인/회원가입)
-- `/chat/**` → authenticated (채팅 API)
-- `/products/my` → authenticated (내 상품 조회)
-- `/products/**` → permitAll (상품 목록/상세)
+- 에러 처리 경로 → permitAll (내부 에러 처리 시 401 방지)
+- WebSocket 경로 → permitAll (STOMP CONNECT에서 JWT 검증)
+- 인증 API → permitAll (로그인/회원가입)
+- 채팅 API → authenticated
+- 내 상품 조회 → authenticated (구체적 경로 우선)
+- 상품 목록/상세 → permitAll (와일드카드 경로)
 
 ---
 

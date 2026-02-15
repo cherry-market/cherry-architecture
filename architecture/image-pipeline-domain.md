@@ -64,7 +64,7 @@ sequenceDiagram
     participant PSVC as ProductService
 
     C->>C: 이미지 선택 (로컬 미리보기)
-    C->>API: POST /api/upload/images {files: [{fileName, contentType, size}]}
+    C->>API: 이미지 업로드 준비 요청 {files: [{fileName, contentType, size}]}
     API->>SVC: prepare(userId, request)
     SVC->>Redis: Rate Limit 체크 (시간당/일일)
     SVC->>SVC: 파일 검증 (포맷, 크기, ContentType 일치)
@@ -79,7 +79,7 @@ sequenceDiagram
         C->>S3: PUT uploadUrl (직접 업로드)
     end
 
-    C->>API: POST /products {imageKeys: [...]}
+    C->>API: 상품 등록 요청 {imageKeys: [...]}
     API->>PSVC: createProduct()
     PSVC->>PSVC: Product 생성 (status: PENDING)
     PSVC->>PSVC: ProductImage 생성 (imageUrl=null, 처리 대기)
@@ -142,18 +142,18 @@ sequenceDiagram
     participant DB as MySQL
     participant S3 as S3 (스케줄러가 나중에 정리)
 
-    C->>API: GET /products/{id}
+    C->>API: 상품 상세 조회
     API-->>C: ProductDetailResponse (기존 이미지 목록)
 
     C->>C: 이미지 조작 (추가/삭제/순서변경/썸네일 재지정)
 
     alt 신규 이미지 추가
-        C->>API: POST /api/upload/images {files}
+        C->>API: 이미지 업로드 준비 요청 {files}
         API-->>C: {imageKey, uploadUrl}[]
         C->>S3: PUT uploadUrl (직접 업로드)
     end
 
-    C->>API: PUT /products/{id} {images: ImageUpdateItem[]}
+    C->>API: 상품 수정 요청 {images: ImageUpdateItem[]}
     Note over API: ImageUpdateItem: {imageId, imageKey, imageOrder, isThumbnail}
     Note over API: 수정 가능 조건: SELLING 또는 RESERVED 상태만
     API->>SVC: updateProduct()

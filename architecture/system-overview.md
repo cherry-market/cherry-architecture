@@ -39,10 +39,10 @@ flowchart LR
 
 ### 3. 실시간 채팅 (WebSocket)
 
-- 브라우저에서 ALB(WSS 443)를 통해 WebSocket 연결 (`/ws` 엔드포인트)
+- 브라우저에서 ALB(WSS 443)를 통해 WebSocket 연결
 - STOMP 프로토콜로 메시지 송수신
-- 채팅방 토픽(`/topic/chat.{roomId}`) 구독으로 실시간 메시지 수신
-- 사용자 토픽(`/topic/user.{userId}`) 구독으로 채팅 목록 실시간 갱신
+- 채팅방 토픽 구독으로 실시간 메시지 수신
+- 사용자 토픽 구독으로 채팅 목록 실시간 갱신
 
 ## Real-time Chat Flow
 
@@ -58,17 +58,17 @@ sequenceDiagram
     B->>B: JWT 검증
     B-->>A: CONNECTED
 
-    A->>B: SUBSCRIBE /topic/chat.{roomId}
+    A->>B: SUBSCRIBE 채팅방 토픽
     B->>B: 채팅방 참여자 검증
-    S->>B: SUBSCRIBE /topic/chat.{roomId}
+    S->>B: SUBSCRIBE 채팅방 토픽
 
-    A->>B: SEND /app/chat.send {content}
+    A->>B: SEND 메시지 전송 {content}
     B->>R: Rate Limit 체크
     B->>B: XSS sanitize
     B->>DB: INSERT chat_messages
-    B-->>A: MESSAGE /topic/chat.{roomId}
-    B-->>S: MESSAGE /topic/chat.{roomId}
-    B-->>S: MESSAGE /topic/user.{sellerId} (목록 갱신 알림)
+    B-->>A: MESSAGE 채팅방 메시지 브로드캐스트
+    B-->>S: MESSAGE 채팅방 메시지 브로드캐스트
+    B-->>S: MESSAGE 사용자 토픽 (목록 갱신 알림)
 ```
 
 ## Image Upload Pipeline

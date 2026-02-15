@@ -41,8 +41,8 @@
 
 | 선택지 | 설명 | 비용 |
 |--------|------|------|
-| **수정 API에 status 포함** | PUT /products/{id}에 status 필드 포함 | 검증 로직 혼재, 유지보수 복잡 |
-| **전용 API 분리** | PATCH /products/{id}/status | 관심사 분리, 검증 독립 |
+| **수정 API에 status 포함** | 상품 수정 API에 status 필드 포함 | 검증 로직 혼재, 유지보수 복잡 |
+| **전용 API 분리** | 상태 전환 전용 API | 관심사 분리, 검증 독립 |
 
 ### 3. 상태별 수정/삭제 허용
 
@@ -85,9 +85,9 @@ SOLD 상태에서 수정이 필요하면 → SOLD → SELLING 전환 후 수정
 ### API 설계
 
 ```
-PATCH  /products/{id}/status   ← 상태 전환 전용
-PUT    /products/{id}          ← 내용 수정 (status 필드 없음)
-DELETE /products/{id}          ← soft delete
+상태 전환 전용 API   ← PATCH, 화이트리스트 검증
+상품 수정 API        ← PUT, status 필드 미포함
+상품 삭제 API        ← DELETE, soft delete (deleted_at)
 ```
 
 ### 동시성 처리

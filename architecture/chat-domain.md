@@ -74,11 +74,11 @@ sequenceDiagram
     participant WS as ChatWebSocketController
     participant SVC as ChatService
     participant DB as MySQL
-    participant T as /topic/chat.{roomId}
+    participant T as 채팅방 토픽
     participant R as 수신자 브라우저
 
     S->>S: 낙관적 UI 추가 (status: sending)
-    S->>WS: STOMP SEND /app/chat.send
+    S->>WS: STOMP SEND 메시지 전송
     WS->>SVC: saveMessage()
     SVC->>SVC: 1. Redis Rate Limit 체크
     SVC->>SVC: 2. 채팅방 참여자 검증
@@ -101,7 +101,7 @@ sequenceDiagram
     participant SVC as ChatService
     participant DB as MySQL
 
-    B->>API: POST /chat/rooms {productId}
+    B->>API: 채팅방 생성 요청 {productId}
     API->>SVC: getOrCreateRoom()
     SVC->>SVC: 자기 상품 체크 → 400 에러
     SVC->>DB: SELECT 기존 방 조회
@@ -126,7 +126,7 @@ sequenceDiagram
     participant SVC as ChatService
     participant DB as MySQL
 
-    C->>API: GET /chat/rooms/{roomId}/messages?cursor&limit=30
+    C->>API: 메시지 히스토리 조회 (커서, limit)
     API->>SVC: getMessages()
     SVC->>SVC: 참여자 검증
     SVC->>DB: SELECT messages (id DESC, 커서 기반)
@@ -143,10 +143,10 @@ sequenceDiagram
     participant WS as ChatWebSocketController
     participant SVC as ChatService
     participant DB as MySQL
-    participant T as /topic/chat.{roomId}
+    participant T as 채팅방 토픽
     participant S as 발신자 브라우저
 
-    R->>WS: STOMP SEND /app/chat.read {roomId, lastReadMessageId}
+    R->>WS: STOMP SEND 읽음 처리 {roomId, lastReadMessageId}
     WS->>SVC: updateReadPosition()
     SVC->>DB: UPDATE chat_read_positions (단조 증가)
     WS->>T: READ_RECEIPT 이벤트 브로드캐스트
@@ -225,7 +225,7 @@ sequenceDiagram
     U->>FE: MoreVertical → "채팅방 나가기"
     FE->>FE: 확인 모달 표시
     U->>FE: "나가기" 클릭
-    FE->>API: POST /chat/rooms/{roomId}/leave
+    FE->>API: 채팅방 나가기 요청
     API->>SVC: leaveRoom(userId, roomId)
     SVC->>DB: INSERT 시스템 메시지 ("○○님이 채팅방을 나갔습니다.")
     SVC->>DB: UPDATE room.lastMessageAt

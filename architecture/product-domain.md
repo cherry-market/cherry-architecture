@@ -99,7 +99,7 @@ sequenceDiagram
     participant DB as MySQL
     participant Repo as ProductRepository
 
-    C->>API: GET /products?cursor&status&categoryCode&minPrice&maxPrice&tradeType&sortBy&limit
+    C->>API: 상품 목록 조회 (커서, 필터, 정렬 파라미터)
     API->>SVC: getProducts(cursor, limit, userId, condition, sortBy)
     SVC->>SVC: buildCacheKey(cursor + filters + sortBy + limit)
     SVC->>Redis: GET 리스트 캐시 키
@@ -190,7 +190,7 @@ sequenceDiagram
     participant Trending as TrendingRepository
     participant Redis as Redis (Sorted Set)
 
-    C->>API: GET /products/{id}
+    C->>API: 상품 상세 조회
     API->>SVC: getProduct(productId, userId, clientIp)
     SVC->>SVC: IP 추출 (X-Forwarded-For 대응)
     SVC->>Trending: tryIncrementViewCount(productId, clientIp)
@@ -219,7 +219,7 @@ sequenceDiagram
     participant Redis as Redis
     participant DB as MySQL
 
-    C->>API: GET /products/trending
+    C->>API: 트렌딩 상품 조회
     API->>SVC: getTrending(userId)
     SVC->>Trending: getTopTrendingProductIds(10)
     Trending->>Redis: ZREVRANGE 트렌딩 Sorted Set 0 9 (상위 10개)
@@ -248,7 +248,7 @@ sequenceDiagram
     participant DB as MySQL
 
     Note over C,DB: 찜 추가
-    C->>API: POST /products/{id}/like
+    C->>API: 찜 추가 요청
     API->>SVC: addLike(userId, productId)
     SVC->>DB: 존재 여부 확인 + 저장 (유니크 제약 위반 catch)
     SVC->>Cache: invalidate(productId)
@@ -256,7 +256,7 @@ sequenceDiagram
     SVC-->>API: 200 OK
 
     Note over C,DB: 찜 취소
-    C->>API: DELETE /products/{id}/like
+    C->>API: 찜 취소 요청
     API->>SVC: removeLike(userId, productId)
     SVC->>DB: DELETE WHERE user_id AND product_id
     SVC->>Cache: invalidate(productId)
@@ -264,13 +264,13 @@ sequenceDiagram
     SVC-->>API: 204 No Content
 
     Note over C,DB: 찜 여부 조회
-    C->>API: GET /products/{id}/like-status
+    C->>API: 찜 여부 조회
     API->>SVC: isLiked(userId, productId)
     SVC->>DB: SELECT EXISTS
     SVC-->>API: Boolean (true/false)
 
     Note over C,DB: 내 찜 목록
-    C->>API: GET /me/likes?cursor&limit=20
+    C->>API: 내 찜 목록 조회 (커서, limit)
     API->>SVC: getMyLikes(userId, cursor, limit)
     SVC->>Redis: GET 찜 목록 캐시 키
     alt Cache Hit

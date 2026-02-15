@@ -29,6 +29,7 @@
 - [ERD](architecture/erd.md) — 데이터 모델 설계
 - [Use Cases](architecture/use-cases.md) — 핵심 유스케이스 다이어그램
 - [CI/CD + Runtime](architecture/cicd.md) — 배포 파이프라인 및 런타임 구조
+- [Chat Domain](architecture/chat-domain.md) — 채팅 도메인 아키텍처 (메시지 흐름, 보안, 확장 포인트)
 
 ### Architecture Decision Records
 
@@ -40,6 +41,8 @@
 - [ADR-004: S3 이미지 정리](decisions/ADR-004-s3-image-cleanup.md)
 - [ADR-005: 채팅 메시지 저장 전략](decisions/ADR-005-chat-message-storage.md)
 - [ADR-006: 채팅 목록 실시간 갱신](decisions/ADR-006-chat-list-realtime-update.md)
+- [ADR-007: 실패 메시지 영구 저장소](decisions/ADR-007-failed-message-storage.md)
+- [ADR-008: 채팅 이미지 첨부 전략](decisions/ADR-008-chat-image-strategy.md)
 
 ### Performance
 

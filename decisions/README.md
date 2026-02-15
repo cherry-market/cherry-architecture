@@ -26,6 +26,8 @@ Cherry 프로젝트의 설계 과정에서 내린 기술적 의사결정 기록�
 |---|------|------|------|
 | 005 | 채팅 메시지 저장 전략 | 동기 DB 저장 (MQ 미사용) | [ADR-005](./ADR-005-chat-message-storage.md) |
 | 006 | 채팅 목록 실시간 갱신 | WebSocket 푸시 (폴링 미사용) | [ADR-006](./ADR-006-chat-list-realtime-update.md) |
+| 007 | 실패 메시지 영구 저장소 | IndexedDB (localForage) | [ADR-007](./ADR-007-failed-message-storage.md) |
+| 008 | 채팅 이미지 첨부 전략 | MVP 미도입, 향후 thumb+view | [ADR-008](./ADR-008-chat-image-strategy.md) |
 
 ## 핵심 설계 원칙
 

@@ -283,8 +283,8 @@ stateDiagram-v2
 |------|------|------|-----|
 | 업로드 방식 | Presigned URL 직접 업로드 | 서버 대역폭 절약, 확장성 | - |
 | 리사이즈 | Lambda 비동기 | 이벤트 기반, 서버 부하 없음 | - |
-| 이미지 수정 범위 | 완전 편집 (추가/삭제/순서/썸네일) | 당근마켓 수준 UX | [ADR-002](../../docs/decisions/phase-5/ADR-002-image-edit-scope.md) |
-| 배치 정리 | 매일 1회 스케줄러 | 즉시 삭제 불필요, 유예기간 확보 | [ADR-004](../../docs/decisions/phase-5/ADR-004-s3-image-cleanup.md) |
+| 이미지 수정 범위 | 완전 편집 (추가/삭제/순서/썸네일) | 당근마켓 수준 UX | [ADR-002](../decisions/ADR-002-image-edit-scope.md) |
+| 배치 정리 | 매일 1회 스케줄러 | 즉시 삭제 불필요, 유예기간 확보 | [ADR-004](../decisions/ADR-004-s3-image-cleanup.md) |
 | PENDING 상태 | 이미지 처리 중 비공개 | 미완성 상품 노출 방지 | - |
 
 ---

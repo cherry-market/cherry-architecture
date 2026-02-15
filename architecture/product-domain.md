@@ -151,9 +151,9 @@ sequenceDiagram
 ```mermaid
 flowchart TD
     A[Product 변경 이벤트] --> B{이벤트 타입}
-    B -->|생성| C[@PostPersist]
-    B -->|수정| D[@PostUpdate]
-    B -->|삭제| E[@PostRemove]
+    B -->|생성| C["@PostPersist"]
+    B -->|수정| D["@PostUpdate"]
+    B -->|삭제| E["@PostRemove"]
     C --> F[ProductEntityListener]
     D --> F
     E --> F

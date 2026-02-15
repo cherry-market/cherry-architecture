@@ -29,6 +29,9 @@
 - [ERD](architecture/erd.md) — 데이터 모델 설계
 - [Use Cases](architecture/use-cases.md) — 핵심 유스케이스 다이어그램
 - [CI/CD + Runtime](architecture/cicd.md) — 배포 파이프라인 및 런타임 구조
+- [Auth Domain](architecture/auth-domain.md) — 인증/회원가입 도메인 (JWT, Spring Security, 토큰 흐름)
+- [Image Pipeline Domain](architecture/image-pipeline-domain.md) — 이미지 업로드 파이프라인 (Presigned URL, S3, Lambda)
+- [Product Domain](architecture/product-domain.md) — 상품 도메인 (CRUD, 캐싱, 트렌딩, 찜, AI 설명 생성)
 - [Chat Domain](architecture/chat-domain.md) — 채팅 도메인 아키텍처 (메시지 흐름, 보안, 확장 포인트)
 
 ### Architecture Decision Records

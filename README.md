@@ -46,6 +46,7 @@
 - [ADR-006: 채팅 목록 실시간 갱신](decisions/ADR-006-chat-list-realtime-update.md)
 - [ADR-007: 실패 메시지 영구 저장소](decisions/ADR-007-failed-message-storage.md)
 - [ADR-008: 채팅 이미지 첨부 전략](decisions/ADR-008-chat-image-strategy.md)
+- [ADR-009: 상품 검색 전략](decisions/ADR-009-search-strategy.md)
 
 ### Performance
 

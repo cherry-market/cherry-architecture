@@ -29,6 +29,12 @@ Cherry 프로젝트의 설계 과정에서 내린 기술적 의사결정 기록�
 | 007 | 실패 메시지 영구 저장소 | IndexedDB (localForage) | [ADR-007](./ADR-007-failed-message-storage.md) |
 | 008 | 채팅 이미지 첨부 전략 | MVP 미도입, 향후 thumb+view | [ADR-008](./ADR-008-chat-image-strategy.md) |
 
+### Phase 7 — 검색
+
+| # | 주제 | 결정 | 문서 |
+|---|------|------|------|
+| 009 | 상품 검색 전략 | MySQL FULLTEXT + ngram (OpenSearch 미도입) | [ADR-009](./ADR-009-search-strategy.md) |
+
 ## 핵심 설계 원칙
 
 1. **관심사 분리**: 거래 상태(status)와 존재 여부(deleted_at)를 분리

@@ -6,11 +6,16 @@
 
 ```mermaid
 flowchart LR
-  U[User Browser] -->|HTTPS 443| CF[CloudFront - Front CDN]
-  CF -->|GET static assets| S3[S3 - Static Website Bucket]
+  U[User Browser] -->|HTTPS 443| CF[CloudFront - User CDN]
+  CF -->|GET static assets| S3[S3 - User Static]
+
+  A[Admin Browser] -->|HTTPS 443| ACF[CloudFront - Admin CDN]
+  ACF -->|GET static assets| AS3[S3 - Admin Static]
+  ACF -.->|WAF IP 제한| WAF[AWS WAF]
 
   U -->|HTTPS 443 / API calls| ALB[Application Load Balancer]
   U -->|WSS 443 / WebSocket| ALB
+  A -->|HTTPS 443 / Admin API| ALB
   ALB -->|Forward HTTP 8080| EC2["EC2 Instance (Docker Compose)"]
   EC2 -->|JDBC 3306| RDS[(RDS MySQL)]
   EC2 -->|TCP 6379| Redis[(Redis Container)]
@@ -29,6 +34,12 @@ flowchart LR
 - 사용자가 브라우저에서 서비스에 접속
 - CloudFront가 S3에 업로드된 정적 파일(React/Vite 빌드 결과)을 서빙
 - 브라우저는 동일 도메인에서 JS/CSS/이미지를 로드
+
+### 1-1. 관리자 앱 서빙
+
+- 관리자 전용 도메인으로 별도 CloudFront + S3 구성
+- AWS WAF IP 화이트리스트로 접근 제한 (허용된 IP만 접속 가능)
+- 사용자 앱과 물리적으로 완전 분리 (별도 버킷, 별도 배포)
 
 ### 2. API 요청 처리
 
@@ -119,3 +130,12 @@ GitHub Actions → Docker 이미지 빌드 → GHCR push → EC2 docker compose 
 - ALB에서 HTTPS 종료 (ACM 인증서)
 - Frontend와 API가 다른 Origin이므로 CORS 정책 적용
 - 원본 이미지 경로는 공개 접근 불가, 리사이즈 결과만 공개
+
+### 관리자 보안 (4중 방어)
+
+| 레이어 | 방어 수단 |
+|--------|----------|
+| 네트워크 | CloudFront WAF IP 화이트리스트 |
+| 인증 | JWT + clientType 교차 검증 (앱-역할 일치 확인) |
+| 인가 | Spring Security `hasRole("ADMIN")` |
+| 감사 | AdminActionLog (IP, 기기 정보, 모든 관리 행위 기록) |

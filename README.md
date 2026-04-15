@@ -47,6 +47,7 @@
 - [ADR-007: 실패 메시지 영구 저장소](decisions/ADR-007-failed-message-storage.md)
 - [ADR-008: 채팅 이미지 첨부 전략](decisions/ADR-008-chat-image-strategy.md)
 - [ADR-009: 상품 검색 전략](decisions/ADR-009-search-strategy.md)
+- [ADR-010: 인증 사용자 열거 방지 및 타이밍 사이드채널 차단](decisions/ADR-010-auth-user-enumeration-hardening.md)
 
 ### Performance
 
@@ -57,6 +58,7 @@ Redis Cache-Aside 패턴 적용 전후 성능 비교 분석입니다.
 ### Engineering
 
 - [AI-Augmented Development](engineering/ai-augmented-development.md) — AI 에이전트 협업 방식과 활용 기록
+- [Security Review (AI Collaboration)](engineering/security-review-ai-collaboration.md) — Phase 10 인증 보안 감사 기록 (AI-인간 협업으로 찾은 사용자 열거 취약점과 수정 프로세스)
 
 ---
 

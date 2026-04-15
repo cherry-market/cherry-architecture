@@ -35,6 +35,12 @@ Cherry 프로젝트의 설계 과정에서 내린 기술적 의사결정 기록�
 |---|------|------|------|
 | 009 | 상품 검색 전략 | MySQL FULLTEXT + ngram (OpenSearch 미도입) | [ADR-009](./ADR-009-search-strategy.md) |
 
+### Phase 10 — 소셜 로그인
+
+| # | 주제 | 결정 | 문서 |
+|---|------|------|------|
+| 010 | 인증 사용자 열거 방지 및 타이밍 사이드채널 차단 | 실패 경로 단일화 + 더미 해시 상수시간 + 계정 단위 rate limit + 클라이언트 측 최근 로그인 수단 힌트 | [ADR-010](./ADR-010-auth-user-enumeration-hardening.md) |
+
 ## 핵심 설계 원칙
 
 1. **관심사 분리**: 거래 상태(status)와 존재 여부(deleted_at)를 분리

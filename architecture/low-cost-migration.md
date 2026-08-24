@@ -9,8 +9,8 @@
 이 문서는 "서비스를 다시 배포했다"는 결과 보고가 아니라, **기존 설계 의도를 유지하면서 인프라 비용을 최소화하도록 다시 구성하는 방법을 고민·설계한 기록**이다.
 
 - 기존 AWS 무료 계정 종료로 공개 배포가 중단되면서, 같은 서비스를 더 낮은 비용으로 다시 올리는 방법을 검토했다.
-- 프로젝트를 폐기한 것은 아니며, 데이터 계층과 이미지 처리 구조 같은 핵심 설계는 유지한 채 비용이 큰 리소스만 대체하는 방향으로 잡았다.
-- 상용 서비스 수준의 상시 인프라 비용이 아니라, 열람·데모 트래픽을 기준으로 비용 최소화를 우선한다.
+- 기존 데이터 계층과 이미지 처리 구조의 설계 의도는 유지하면서, 비용이 큰 인프라 구성 요소를 저비용 대안으로 전환한다.
+- 현재 서비스 규모와 예상 트래픽을 기준으로, 과도한 상시 리소스를 두지 않고 운영 비용을 최소화하는 방향으로 설계한다.
 - 아래 전환 후보 구조는 설계 단계이며 실제 이전은 아직 진행하지 않았다 (구현 상태는 [8장](#8-구현-상태-구분) 참조).
 
 관련 기존 문서:
@@ -23,15 +23,14 @@
 
 ## 2. 현재 상태
 
+기존 AWS 환경은 종료된 상태이며, 동일한 애플리케이션 구조를 유지하면서 인프라를 재구성하는 것을 전제로 한다.
+
 | 항목 | 상태 |
 |------|------|
 | 기존 AWS 인프라 | 계정 종료로 **내려간 상태** |
 | 공개 배포 | **중단** |
 | 로컬 실행 | 가능 |
-| 포트폴리오 증빙 | 필요 시 로컬에서 주요 화면 재캡처로 보완 가능 |
-| S3 이미지 자산 | 로컬 백업이 없다면 복구 대상으로 두지 않음 |
-
-당시의 아키텍처·성능 개선 문서는 공개되어 있으나, 실제 서비스 화면에는 현재 접근할 수 없다.
+| S3 이미지 자산 | 별도 백업이 없는 경우 이전 대상에서 제외 |
 
 ---
 
@@ -102,10 +101,10 @@ sequenceDiagram
 | **Cache-Aside 구조 유지** | Redis 또는 호환 가능한 Valkey 계열로 기존 캐시 전략 보존 |
 | **이미지 처리를 API 서버와 분리** | 리사이징이 API 서버 CPU/메모리와 경쟁하지 않도록 책임 분리 유지 |
 | **비동기 이미지 처리 유지** | Object Storage 이벤트 이후 별도 Worker가 처리하는 구조 유지 |
-| **포트폴리오 트래픽 기준 설계** | 상용 수준 고정 비용보다 열람·데모 목적의 비용 최소화 우선 |
+| **현재 서비스 규모에 맞는 인프라 구성** | 예상 트래픽과 사용량에 비해 과도한 상시 리소스를 두지 않고, 필요 수준의 인프라만 유지 |
 
 > [!NOTE]
-> 무료 플랜의 조건·제한(용량, 요청 수, 슬립 정책 등)은 시점에 따라 바뀌므로, **실제 이전 시점에 다시 조사한 뒤 확정**해야 한다.
+> 각 서비스의 Free Tier·저비용 플랜 조건·제한(용량, 요청 수, 슬립 정책 등)은 시점에 따라 바뀌므로, **실제 이전 시점에 다시 조사한 뒤 확정**해야 한다.
 
 ---
 
@@ -113,10 +112,10 @@ sequenceDiagram
 
 ```mermaid
 flowchart TD
-    A["React / Vite"] --> B["무료 Static Hosting"]
-    A -->|API| C["Spring Boot / 무료 Runtime"]
-    C --> D["Managed MySQL Free"]
-    C --> E["Managed Redis / Valkey Free"]
+    A["React / Vite"] --> B["Static Hosting"]
+    A -->|API| C["Spring Boot Runtime"]
+    C --> D["Managed MySQL"]
+    C --> E["Managed Redis / Valkey"]
 
     subgraph IMG["이미지 처리 (비동기, 후보)"]
         F["Cloudflare R2<br/>(Original)"] --> G["Object Created Event"]
@@ -133,14 +132,14 @@ flowchart TD
 
 | 역할 | 후보 | 전환 방향 |
 |------|------|-----------|
-| Frontend | Cloudflare Pages / Firebase Hosting 등 무료 정적 호스팅 | React 정적 배포 |
-| Backend | 무료 Container / Web Runtime | Spring Boot 유지 |
-| DB | Managed MySQL Free | 기존 MySQL/JPA 코드 최대한 유지 |
-| Cache | Managed Redis / Valkey Free | 기존 Cache-Aside 구조 유지 |
+| Frontend | Cloudflare Pages / Firebase Hosting 등 정적 호스팅 | React 정적 배포 |
+| Backend | Container / Web Runtime | Spring Boot 유지 |
+| DB | Managed MySQL | 기존 MySQL/JPA 코드 최대한 유지 |
+| Cache | Managed Redis / Valkey | 기존 Cache-Aside 구조 유지 |
 | Image Storage | Cloudflare R2 | S3 대체 Object Storage |
 | Image Processing | Queue + Worker + Transform | 기존 S3 Event + Lambda 책임 분리 보존 |
 
-> 위 서비스명은 모두 **전환 후보**이며 확정된 선택이 아니다. 실제 이전 시점에 무료 플랜 조건을 재조사해 최종 결정한다.
+> 위 서비스명은 모두 **전환 후보**이며 확정된 선택이 아니다. 각 후보는 Free Tier 또는 저비용 플랜을 우선 검토하되, 실제 이전 시점에 조건을 재조사해 최종 결정한다.
 
 ---
 
@@ -189,40 +188,28 @@ flowchart LR
 |------|------|
 | ✅ **Implemented (previous AWS version)** | React/Vite, S3+CloudFront, Spring Boot/EC2, RDS MySQL, Redis, S3 이미지 저장, S3 Event → Lambda(sharp) → 리사이즈 → Callback 파이프라인 |
 | 📐 **Designed for low-cost migration** | 전환 원칙, 저비용 후보 구조, 이미지 파이프라인 전환 방향(R2 + Queue + Worker) |
-| ⛔ **Not implemented yet** | 무료 Static Hosting / Runtime 배포, Managed MySQL·Redis 이전, Cloudflare R2 이전, Queue·Worker 파이프라인 구현 |
+| ⛔ **Not implemented yet** | Static Hosting / Runtime 배포, Managed MySQL·Redis 이전, Cloudflare R2 이전, Queue·Worker 파이프라인 구현 |
 
 ---
 
-## 9. 포트폴리오 보완 계획 *(Not Implemented)*
-
-실제 인프라 이전보다 아래 작업을 먼저 수행한다.
-
-- [ ] 로컬에서 체리를 실행해 대표 화면 캡처
-- [ ] 상품 목록 / 상세 / 필터·정렬 / 마이페이지 / 관리자 화면 확보
-- [ ] 가능하면 이미지 업로드 → 처리 완료 → Thumbnail 표시 흐름 캡처
-- [ ] 기존 공개 아키텍처 문서에 배포 중단 이유 명시
-
----
-
-## 10. 추후 구현 순서 *(Not Implemented)*
+## 9. 추후 구현 순서 *(Not Implemented)*
 
 1. [ ] 로컬 실행 및 주요 기능 정상 동작 확인
 2. [ ] 샘플 데이터와 이미지 자산 재구성
-3. [ ] 실제 이전 시점의 무료 플랜 / 제약 재조사
+3. [ ] 실제 이전 시점의 Free Tier·저비용 플랜 / 제약 재조사
 4. [ ] MySQL 이전 및 Spring Boot 연결
 5. [ ] Redis / Valkey 연결
 6. [ ] Backend / Frontend 배포
 7. [ ] Object Storage(R2) 이전
 8. [ ] 이미지 이벤트 → Queue → Worker 파이프라인 구현
-9. [ ] 전체 기능 및 포트폴리오 링크 검증
+9. [ ] 전체 기능 동작 및 엔드포인트 검증
 
 ---
 
-## 11. 마무리 메모
+## 10. 마무리 메모
 
-이 문서는 재배포 성과를 자랑하기 위한 것이 아니라, **무엇을 유지하고 무엇을 바꿀지 판단한 과정**을 남기기 위한 것이다.
+이번 전환에서는 기존 기술 스택을 그대로 유지하는 것보다, 기존 구조에서 중요했던 설계 특성을 유지하는 것을 우선한다.
 
-- 유지: MySQL/JPA 데이터 계층, Cache-Aside 전략, 이미지 후처리의 책임 분리와 비동기 구조
-- 변경: 상시 비용이 드는 관리형·컴퓨팅 리소스를 무료 플랜 기반 후보로 대체
+MySQL/JPA 기반 데이터 계층과 Cache-Aside 전략은 기존 코드와 성능 개선 결과를 유지하기 위해 보존하고, 이미지 처리 역시 API 서버와 후처리 작업을 분리한 비동기 구조를 유지한다.
 
-포트폴리오용 프로젝트라도, 단순히 다시 띄우는 것보다 **비용 제약 안에서 설계 의도를 어떻게 지킬지 고민한 기록**을 남기는 데 의미가 있다고 판단했다.
+반면 특정 AWS 서비스에 대한 의존은 필수 조건으로 두지 않는다. 현재 사용량과 비용 조건에 맞는 인프라로 대체하되, 기존 구조에서 해결하려 했던 문제와 책임 분리는 유지하는 것이 이번 전환의 기준이다.

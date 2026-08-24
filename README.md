@@ -4,6 +4,10 @@
 
 [![Service](https://img.shields.io/badge/Service-cheryi.com-FF2E88?style=for-the-badge&logo=safari&logoColor=white)](https://cheryi.com)
 
+> [!IMPORTANT]
+> **현재 공개 배포는 중단된 상태입니다** (AWS 무료 계정 종료). 문서와 코드는 그대로 유지되며, 로컬 실행은 가능합니다.
+> 서비스 규모에 맞춰 인프라 비용을 낮추는 저비용 구조로의 전환은 설계 단계입니다(미구현). → [저비용 인프라 전환 설계](architecture/low-cost-migration.md)
+
 ---
 
 ## Tech Stack
@@ -26,6 +30,7 @@
 시스템 구성, 배포 구조, 데이터 흐름을 다룹니다.
 
 - [System Overview](architecture/system-overview.md) — 전체 인프라 구성 (Mermaid)
+- [저비용 인프라 전환 설계](architecture/low-cost-migration.md) — 기존 AWS 구조와 저비용 전환 후보 구조 비교 (설계 단계, 미구현)
 - [ERD](architecture/erd.md) — 데이터 모델 설계
 - [Use Cases](architecture/use-cases.md) — 핵심 유스케이스 다이어그램
 - [CI/CD + Runtime](architecture/cicd.md) — 배포 파이프라인 및 런타임 구조

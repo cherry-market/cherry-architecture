@@ -2,6 +2,9 @@
 
 > Cherry 플랫폼의 인프라 구성 및 트래픽 흐름
 
+> [!NOTE]
+> 아래는 실제로 구현·운영했던 AWS 구조입니다. 현재는 AWS 무료 계정 종료로 공개 배포가 중단된 상태이며, 저비용 전환 설계는 [저비용 인프라 전환 설계](./low-cost-migration.md) 참조(미구현).
+
 ## Infrastructure
 
 ```mermaid

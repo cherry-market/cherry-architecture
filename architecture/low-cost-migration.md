@@ -53,7 +53,9 @@ flowchart TD
         J --> K["Spring Boot Callback"]
     end
 
-    C -->|Presigned URL 발급| F
+    A -->|업로드 URL 요청| C
+    C -->|Presigned URL 반환| A
+    A -->|PUT Original| F
     K --> C
 ```
 
@@ -127,7 +129,9 @@ flowchart TD
         K --> L["Spring Boot Callback"]
     end
 
-    C -->|업로드 URL 발급| F
+    A -->|업로드 URL 요청| C
+    C -->|업로드 URL 반환| A
+    A -->|PUT Original| F
     L --> C
 ```
 
@@ -177,7 +181,7 @@ flowchart LR
 - 비동기 처리 및 재처리(재시도) 구조로 확장할 수 있다.
 - 원본 / Detail / Thumbnail 저장 규칙을 유지할 수 있다.
 
-전환안이 큐(Queue)를 명시적으로 두는 점은 기존 `S3 Event → Lambda` 대비 재처리·백프레셔 제어 지점을 드러내려는 의도이며, 이 역시 실제 구현 시점에 검증할 대상이다.
+전환안에서는 기존 `S3 Event → Lambda` 구조와 달리 Queue를 명시적으로 두어 이벤트 발생과 이미지 처리 사이의 속도 차이를 완충하고, 재처리 지점을 분리한다. 구체적인 소비 속도와 재시도 정책은 실제 구현 시점에 Worker 측 정책까지 포함해 결정한다.
 
 ---
 
